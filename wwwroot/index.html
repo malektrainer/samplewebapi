@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Student application</title>
+</head>
+
+<body>
+
+    <div>
+        <h2>Students</h2>
+        <ul id="students" />
+    </div>
+    <div>
+        <h2>Search by ID</h2>
+        <input type="text" id="studentId" size="5" />
+        <input type="button" value="Search" onclick="find();" />
+        <p id="student" />
+    </div>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    
+    <script>
+    var uri = 'api/student';
+    $(function () {
+      // Send an AJAX request
+      $.getJSON(uri)
+          .done(function (data) {
+            // On success, 'data' contains a list of students.
+            $.each(data, function (key, item) {
+              // Add a list item for the student.
+              $('<li>', { text: formatStudent(item) }).appendTo($('#students'));
+            });
+          });
+    });
+
+    function formatStudent(item) {
+      return item.name + ': ' + item.age;
+    }
+
+    function find() {
+      var id = $('#studentId').val();
+      $.getJSON(uri + '/' + id)
+          .done(function (data) {
+            $('#student').text(formatStudent(data));
+          })
+          .fail(function (jqXHR, textStatus, err) {
+            $('#student').text('We got an error: ' + err);
+          });
+    }
+  </script>
+</body>
+
+</html>
